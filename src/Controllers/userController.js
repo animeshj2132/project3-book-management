@@ -109,7 +109,6 @@ const loginUser = async function (req, res) {
             let key = jwt.sign(
             {
                 id: Email._id.toString(),
-                iat: iat,
                 iat:Math.floor(new Date().getTime()/1000)},
                 "bm-8",{expiresIn:"3h"});
         

@@ -194,7 +194,7 @@ const deleteReview = async function (req, res) {
         await bookModel.findByIdAndUpdate({ _id: bookID }, { reviews: bookSearch.reviews - 1 });
 
         await reviewModel.findByIdAndUpdate(reviewID, { $set: { isDeleted: true, deleted: dateTime ,new: true }});
-       return res.status(200).send({ status: true, msg: "book deleted successfully" });
+       return res.status(200).send({ status: true, msg: "review deleted successfully" });
         }
        
 
