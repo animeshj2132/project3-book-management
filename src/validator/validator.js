@@ -82,6 +82,12 @@ let validateRating = (rating) => {
       const result = regEx.test(x)
       return result;
   }
+
+  function isValidImage(x){
+    const regEx = /.+\.(?:(jpg|gif|png|jpeg))/   //It will handle all undefined, null, only numbersNaming, dot, space allowed in between
+    const result = regEx.test(x)
+    return result;
+  }
   
 
 module.exports.isValid = isValid
@@ -95,4 +101,8 @@ module.exports.Valid = Valid
 module.exports.isTitle = isTitle
 module.exports.ISBNvalidate = ISBNvalidate
 module.exports.validateRating= validateRating
+module.exports.isValidImage= isValidImage
+
+
+
 

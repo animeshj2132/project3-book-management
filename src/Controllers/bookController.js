@@ -4,12 +4,43 @@ const userModel = require("../Models/userModel")
 const validator = require("../validator/validator.js")
 const moment = require('moment');
 const reviewModel = require("../Models/reviewModel");
+const aws = require("aws-sdk")
+
+//to connect with the AWS with credentials
+aws.config.update({
+    accessKeyId: "AKIAY3L35MCRVFM24Q7U",
+    secretAccessKey: "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",
+    region: "ap-south-1"
+})
+
+//to upload the image file on AWS
+const uplodFile = async function (file) {
+    return new Promise(function (resolve, reject) {
+        let s3 = new aws.S3({ apiVersion: '2006-03-01' });
+
+        var uploadParams = {
+            Body: file.buffer,
+            ACL: "public-read",
+            Bucket: "classroom-training-bucket",
+            Key: "booksManagementGroup7/" + file.originalname
+        }
+
+        s3.upload(uploadParams, function (err, data) {
+            if (err) {
+                return reject({ "error": err })
+            }
+            console.log(data)
+            console.log("file uploaded succesfully")
+            return resolve(data.Location)
+        })
+    })
+}
 
 
 
 const createBook = async function (req, res) {
     try {
-        let data = req.body
+        let data = JSON.parse(JSON.stringify(req.body))
         const { title, excerpt, userId, ISBN, category, subcategory, releasedAt } = data
 
         if (Object.keys(data).length == 0) {
@@ -105,8 +136,31 @@ const createBook = async function (req, res) {
                 msg: "Enter a valid date with the format (YYYY-MM-DD).",
             })
 
-        let bookCreated = await bookModel.create(data)
-        res.status(201).send({ status: true, data: bookCreated })
+            let bookCoverFile = req.files
+            if (bookCoverFile.length == 0) {
+                return res.status(400).send({ status: false, message: "Please Upload the Image" })
+            }
+            if (bookCoverFile.length > 1) {
+                return res.status(400).send({ status: false, message: "Please upload only one image" })
+            }
+            if (!validator.isValidImage(bookCoverFile[0].originalname)) {
+                return res.status(400).send({ status: false, message: "Please upload only image file with extension jpg, png, gif, jpeg" })
+            }
+            let bookCoverURL = await uplodFile(bookCoverFile[0])
+
+            const bookData = {
+                title: title.trim().toUpperCase(),
+                excerpt: excerpt.trim(),
+                userId: userId.trim(),
+                ISBN: ISBN.trim(),
+                bookCover: bookCoverURL,
+                category: category.trim(),
+                subcategory: subcategory,
+                releasedAt: releasedAt.trim()
+            }
+            const createBook = await bookModel.create(bookData)
+            return res.status(201).send({ status: true, message: 'Success', data: createBook })
+        
     }
     catch (err) {
         res.status(500).send({ msg: "Error", error: err.message })
