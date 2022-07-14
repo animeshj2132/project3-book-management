@@ -13,7 +13,7 @@ const Authentication = function (req, res, next) {
       return res.status(400).send({ msg: "x-api-key header is required" });
 
         jwt.verify(key, "bm-8",((error)=> {
-          if(error){return res.status(401).send({status:false, msg:"invalid token recived for authentication"})};
+          if(error){return res.status(401).send({status:false, msg:error.message})};
           next()}))
        
   } catch (error) {

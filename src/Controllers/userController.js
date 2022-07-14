@@ -64,6 +64,9 @@ const createUser = async function (req, res) {
 
         if (!validatePassword(password)) { return res.status(400).send({ status: false, message: "enter valid password" }) }
 
+        if(data.address){
+        if(typeof data.address !== "object")return res.status(400).send({status:false,msg:"address must be in the form of object"})}
+
         if (!["Mr", "Mrs", "Miss"].includes(data.title.trim())) { return res.status(400).send({ status: false, msg: "title must be Mr, Mrs or Miss" }) }
 
         let Email = await userModel.findOne({ email: email })
@@ -100,6 +103,7 @@ const loginUser = async function (req, res) {
 
         if (!validatePassword(password)) { return res.status(400).send({ status: false, message: "enter valid password" }) }
 
+
         let Email = await userModel.findOne({ email: email })
         if (!Email) return res.status(400).send({ status: false, message: "user not found" })
 
@@ -109,7 +113,7 @@ const loginUser = async function (req, res) {
             let key = jwt.sign(
             {
                 id: Email._id.toString(),
-                iat:Math.floor(new Date().getTime()/1000)},
+                },
                 "bm-8",{expiresIn:"3h"});
         
         
