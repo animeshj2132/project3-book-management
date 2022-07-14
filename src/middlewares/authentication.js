@@ -9,14 +9,15 @@ const Authentication = function (req, res, next) {
   try {
     let key = req.headers["x-api-key"];
     if (!key) key = req.headers["X-Api-Key"];
-    if (!key)
-      return res.status(400).send({ msg: "x-api-key header is required" });
+    if (!key) return res.status(400).send({ msg: "x-api-key header is required" });
 
-        jwt.verify(key, "bm-8",((error)=> {
-          if(error){return res.status(401).send({status:false, msg:error.message})};
-          next()}))
+    let auth =   jwt.verify(key, "bm-8")          
+    if(!auth){return res.status(401).send({status:false, msg:error.message})};
+    
+     next()
        
   } catch (error) {
+    if(error.message=="jwt expired") return res.status(403).send({status:false,msg:" Your token is expires "})
       return res.status(500).send({ status: false, error: error.name, msg: error.message }) 
   }
 }
