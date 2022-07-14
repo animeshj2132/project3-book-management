@@ -95,14 +95,14 @@ let updateReview = async function (req, res) {
         let body = req.body
         let bookID = req.params.bookId;
         let reviewID = req.params.reviewId;
-        let check= Object.keys(bodyData)
+        let check= Object.keys(body)
         let  arr=['reviewedBy','review','rating'] 
 
         if (!mongoose.Types.ObjectId.isValid(bookID)) { return res.status(400).send({ status: false, msg: "enter a valid book id" }) }
 
         if (!mongoose.Types.ObjectId.isValid(reviewID)) { return res.status(400).send({ status: false, msg: "enter a valid review id" }) }
 
-        if (Object.keys(bodyData).length == 0) { return res.status(400).send({ status: false, msg: "Enter the Books details" }) }
+        if (Object.keys(body).length == 0) { return res.status(400).send({ status: false, msg: "Enter the Books details" }) }
      
         for(let i=0;i<check.length;i++){
         

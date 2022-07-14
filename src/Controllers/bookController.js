@@ -124,7 +124,7 @@ const getBooks = async function (req, res) {
         
           let getQueryData = req.query;
       
-          const { userId, category, subcategory } = getQueryData;
+          const { userId, category} = getQueryData;
       
           if (Object.keys(getQueryData).length > 0) {
             if (!userId && !category) {

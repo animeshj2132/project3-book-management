@@ -118,7 +118,7 @@ const loginUser = async function (req, res) {
         
         
         res.setHeader("x-api-key", key)
-        res.status(200).send({ status: true, key: key })
+        res.status(200).send({ status: true, msg:"token is valid for 3h", key: key })
 
     } catch (error) {
         res.status(500).send({ msg: error.message })
