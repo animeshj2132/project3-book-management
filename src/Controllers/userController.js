@@ -15,7 +15,7 @@ const validBody = function (value) {
 }
 
 let nameValidator = function (name) {
-    let regx = /^[a-zA-z]+([\s][a-zA-Z\,]+)*$/;
+    let regx = /^[a-zA-z]+([\s][a-zA-Z\,]+)*$/; 
     return regx.test(name);
 }
 
@@ -118,7 +118,7 @@ const loginUser = async function (req, res) {
         
         
         res.setHeader("x-api-key", key)
-        res.status(200).send({ status: true, msg:"token is valid for 3h", key: key })
+        res.status(200).send({ status: true, msg:"token is valid for 60 seconds", key: key })
 
     } catch (error) {
         res.status(500).send({ msg: error.message })

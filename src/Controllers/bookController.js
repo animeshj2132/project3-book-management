@@ -207,6 +207,16 @@ let updateBook=async function (req,res){
         }
         let data=req.body
         let book=req.params.bookId 
+      
+      
+    let check = Object.keys(data)
+         let arr = ['releasedAt','title','excerpt','ISBN']
+
+         for (let i = 0; i < check.length; i++) {
+
+             let updatee = arr.includes(check[i])
+             if (!updatee) return res.status(400).send({ status: false, msg: "you can only update  releasedAt, title, excerpt and ISBN fields." })}
+      
         const findBook = await bookModel.findOne({_id:book,isDeleted:false}).lean()
         if(!findBook) return res.status(404).send({ status: false, msg:"No book found"  })
 

@@ -3,21 +3,20 @@ const userModel = require("../Models/userModel");
 const bookModel = require("../Models/bookModel");
 const mongoose  = require("mongoose");
 
-
 //authentication
 const Authentication = function (req, res, next) {
   try {
     let key = req.headers["x-api-key"];
     if (!key) key = req.headers["X-Api-Key"];
-    if (!key) return res.status(400).send({ msg: "x-api-key header is required" });
+    if (!key)
+      return res.status(400).send({ msg: "x-api-key header is required" });
 
-    let auth =  jwt.verify(key, "bm-8")          
-    if(!auth){return res.status(401).send({status:false, msg:"invalid Token"})};
-    
-     next()
+        jwt.verify(key, "bm-8",((error)=> {
+          //if(error.message == "jwt expired"){return res.status(403).send({status:false, msg:"your token is expired"})};
+          if(error){return res.status(401).send({status:false, msg:error.message})};
+          next()}))
        
   } catch (error) {
-    if(error.message=="jwt expired") return res.status(403).send({status:false,msg:" Your token is expires "})
       return res.status(500).send({ status: false, error: error.name, msg: error.message }) 
   }
 }
@@ -44,7 +43,7 @@ let Authorization = async function (req, res, next) {
     let userID = findBookID.userId.toString();
 
     if (logedinUserID != userID)
-      return res.status(403).send({ msg: "logedin user is not authorized " });
+      return res.status(403).send({ msg: "loggedin user is not authorized " });
 
     next();
   } catch (error) {
